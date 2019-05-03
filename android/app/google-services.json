@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "709409880494",
+    "firebase_url": "https://dent-app-944c6.firebaseio.com",
+    "project_id": "dent-app-944c6",
+    "storage_bucket": "dent-app-944c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709409880494:android:f1f2c62fbd2476a4",
+        "android_client_info": {
+          "package_name": "corner.dentapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "709409880494-0a418c6k859ffp9tiubnquqmgmiidlcq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "corner.dentapp",
+            "certificate_hash": "ff236a358456d417c71954cc5f3b405616026e97"
+          }
+        },
+        {
+          "client_id": "709409880494-e98mf1n6gqbdcu7jm600dj59qisjbr95.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvQ16XPWTvjaAEFFuwEv3xzWju4WYSJnc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "709409880494-e98mf1n6gqbdcu7jm600dj59qisjbr95.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
