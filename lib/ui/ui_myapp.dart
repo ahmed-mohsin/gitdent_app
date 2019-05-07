@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'ui_bottomnavbar.dart';
 import 'myDravver.dart';
-import 'ui_Mybody.dart';
+import 'package:dent_app/navbarElments/home.dart';
 import 'tutorailModel.dart';
 import 'listv-item-fromtutos.dart';
 import 'casesModel.dart';
@@ -37,9 +37,6 @@ class _MyAppState extends State<MyApp> {
                     color: Colors.teal,
                   ),
                   onPressed: () {
-
-                    Scaffold.of(context).showSnackBar(
-                        SnackBar(content: Text("vvait till image upload"),duration: Duration(seconds: 10),backgroundColor: Colors.yellowAccent,));
                   })),
           drawer: Mydrawer(),
           body: Mybody(),

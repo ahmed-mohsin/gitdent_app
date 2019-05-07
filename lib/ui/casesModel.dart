@@ -5,7 +5,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter_simple_video_player/flutter_simple_video_player.dart';
-import 'ui_Mybody.dart';
+import 'package:dent_app/navbarElments/home.dart';
 import 'addCase.dart';
 
 class caseBody extends StatefulWidget {
@@ -64,7 +64,7 @@ class _casesBodyState extends State<casesBody> {
         child: StreamBuilder(
             stream: Firestore.instance
                 .collection('cases')
-                .orderBy('likes', descending: true)
+                .orderBy('date', descending: true)
                 .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -139,7 +139,11 @@ class _casesBodyState extends State<casesBody> {
                                   child: Padding(
                                       padding: EdgeInsets.only(left: 2),
                                       child: FlatButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          setState(() {
+
+                                          });
+                                        },
                                         child: Text(
                                             '${caseSnapshot['likes'].toString()}' +
                                                 ' likes',

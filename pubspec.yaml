@@ -32,7 +32,9 @@ dev_dependencies:
   firebase_auth: ^0.8.4+5
   shared_preferences: ^0.5.2
   image_picker: ^0.5.4+3
+  intl: ^0.15.8
   fluttertoast: ^3.0.4
+
   ## need extra config for ios
 
 
