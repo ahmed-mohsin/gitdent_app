@@ -6,7 +6,7 @@ class profileActivity extends StatelessWidget {
     return Container(
       color: Colors.yellowAccent,
       child: Center(
-        child: Text("hello from profile",textDirection: TextDirection.ltr,),
+        child: Text("hello from profile arena",textDirection: TextDirection.ltr,),
       ),
     );
   }
