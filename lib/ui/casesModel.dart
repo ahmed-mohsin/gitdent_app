@@ -3,7 +3,7 @@ import 'ui_bottomnavbar.dart';
 import 'myDravver.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:share/share.dart';
 import 'package:flutter_simple_video_player/flutter_simple_video_player.dart';
 import 'package:dent_app/navbarElments/home.dart';
 import 'addCase.dart';
@@ -86,33 +86,60 @@ class _casesBodyState extends State<casesBody> {
                       child: Column(
                         children: <Widget>[
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      '${caseSnapshot['profileimg']}'),
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
                                 children: <Widget>[
-                                  Text('${caseSnapshot['username']}',
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w900,
-                                        color: Colors.black,
-                                      )),
                                   Padding(
-                                    padding: EdgeInsets.only(left: 5, top: 3),
-                                    child: Text(
-                                      '${caseSnapshot['date']}',
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 12),
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          '${caseSnapshot['profileimg']}'),
                                     ),
-                                  )
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text('${caseSnapshot['username']}',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.black,
+                                          )),
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.only(left: 5, top: 3),
+                                        child: Text(
+                                          '${caseSnapshot['date']}',
+                                          style: TextStyle(
+                                              color: Colors.grey, fontSize: 12),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ],
                               ),
+                              IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    var snack = SnackBar(
+                                      content: Text(
+                                          "click delete to delete the post"),
+                                      action: SnackBarAction(
+                                          label: "delete ",
+                                          onPressed: () {
+                                            Firestore.instance.runTransaction(
+                                                (Transaction
+                                                    myTransaction) async {
+                                              await myTransaction.delete(
+                                                  snapshot.data.documents[index]
+                                                      .reference);
+                                            });
+                                          }),
+                                    );
+                                    Scaffold.of(context).showSnackBar(snack);
+                                  })
                             ],
                           ),
                           Container(
@@ -140,9 +167,7 @@ class _casesBodyState extends State<casesBody> {
                                       padding: EdgeInsets.only(left: 2),
                                       child: FlatButton(
                                         onPressed: () {
-                                          setState(() {
-
-                                          });
+                                          setState(() {});
                                         },
                                         child: Text(
                                             '${caseSnapshot['likes'].toString()}' +
@@ -171,7 +196,14 @@ class _casesBodyState extends State<casesBody> {
                                   child: Padding(
                                       padding: EdgeInsets.only(right: 8),
                                       child: FlatButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Share.share(
+                                            "${caseSnapshot['img']}" +
+                                                "\n \n ${caseSnapshot['description']}" +
+                                                "        \n\n  Text form DentApp" +
+                                                "\n \n for more please visit filgoal.com",
+                                          );
+                                        },
                                         child: Text("Share",
                                             style: TextStyle(
                                               fontSize: 12,
@@ -195,7 +227,6 @@ class _casesBodyState extends State<casesBody> {
             }));
   }
 }
-
 
 /*PhotoView(customSize: Size.fromHeight(300),
                                 imageProvider: NetworkImage('${caseSnapshot['img']}'),
