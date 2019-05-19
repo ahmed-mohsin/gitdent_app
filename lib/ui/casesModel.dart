@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'ui_bottomnavbar.dart';
 import 'myDravver.dart';
-import 'package:photo_view/photo_view.dart';
+
+//import 'package:photo_view/photo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:share/share.dart';
-import 'package:flutter_simple_video_player/flutter_simple_video_player.dart';
-import 'package:dent_app/navbarElments/home.dart';
+
+//import 'package:flutter_simple_video_player/flutter_simple_video_player.dart';
+//import 'package:dent_app/navbarElments/home.dart';
 import 'addCase.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class caseBody extends StatefulWidget {
   @override
@@ -41,22 +44,28 @@ class _caseBodyState extends State<caseBody> {
                     );
                   })),
           drawer: Mydrawer(),
-          body: new casesBody(),
+          body: new CaseBody(),
           bottomNavigationBar: BottomnavBar()),
     );
   }
 }
 
-class casesBody extends StatefulWidget {
-  const casesBody({
+class CaseBody extends StatefulWidget {
+  const CaseBody({
     Key key,
   }) : super(key: key);
 
   @override
-  _casesBodyState createState() => _casesBodyState();
+  _CaseBodyState createState() => _CaseBodyState();
 }
 
-class _casesBodyState extends State<casesBody> {
+class _CaseBodyState extends State<CaseBody> {
+  double fontsize = 12;
+  var _activelikeColor = Colors.grey;
+  String like_text = "Like";
+  bool likebool;
+  var ref = Firestore.instance.collection('cases');
+  var postId;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -74,13 +83,14 @@ class _casesBodyState extends State<casesBody> {
                   style: TextStyle(fontSize: 25),
                 ));
               }
-              var casedata = snapshot.data;
+              //var casedata = snapshot.data;
               return ListView.builder(
                   physics: BouncingScrollPhysics(),
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
                     DocumentSnapshot caseSnapshot =
                         snapshot.data.documents[index];
+
                     return Container(
                       color: Colors.white,
                       child: Column(
@@ -167,21 +177,78 @@ class _casesBodyState extends State<casesBody> {
                                       padding: EdgeInsets.only(left: 2),
                                       child: FlatButton(
                                         onPressed: () {
-                                          setState(() {});
-                                        },
+                                          setState(() {
+                                            bool getLikebool =
+                                            caseSnapshot['Likebool'];
+                                            print(getLikebool);
+                                            likebool = getLikebool;
+                                            switch (likebool) {
+                                              case false:
+                                                {
+                                                  caseSnapshot.reference
+                                                      .updateData({
+                                                    'likes':
+                                                    caseSnapshot['likes'] +
+                                                        1,
+                                                    'Likebool': true
+                                                  });
+                                                  _activelikeColor =
+                                                      Colors.teal;
+                                                  fontsize = 13.0;
+                                                }
+                                                break;
+                                              case true:
+                                                {
+                                                  caseSnapshot.reference
+                                                      .updateData({
+                                                    'likes':
+                                                    caseSnapshot['likes'] -
+                                                        1,
+                                                    'Likebool': false
+                                                  });
+                                                  _activelikeColor =
+                                                      Colors.grey;
+                                                  fontsize = 12.0;
+                                                }
+                                                break;
+                                            /*default :{
+                                                caseSnapshot.reference.updateData({
+                                                  //'likes':caseSnapshot['likes']+1,
+                                                  'Likebool':false
+                                                });
+                                                //_activelikeColor= Colors.grey;
+                                                //fontsize=12.0;
+                                              }*/
+                                            }
+                                          });
+                                        }
+
+                                        //setState(() {});
+
+                                        ,
                                         child: Text(
                                             '${caseSnapshot['likes'].toString()}' +
                                                 ' likes',
                                             style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.teal,
+                                              fontSize: fontsize,
+                                              color: _activelikeColor,
                                             )),
                                       )),
                                 ),
                                 InkWell(
                                   onTap: () {},
                                   child: FlatButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      postId = snapshot
+                                          .data.documents[index].documentID;
+                                      print(postId);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddComment(postId)),
+                                      );
+                                    },
                                     child: Text(
                                         '${caseSnapshot['comments'].toString()}' +
                                             ' comments',
@@ -192,7 +259,7 @@ class _casesBodyState extends State<casesBody> {
                                   ),
                                 ),
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () => builder(),
                                   child: Padding(
                                       padding: EdgeInsets.only(right: 8),
                                       child: FlatButton(
@@ -234,3 +301,52 @@ class _casesBodyState extends State<casesBody> {
                                     BoxDecoration(color: Colors.white),
                                 //enableRotation: true,
                               ))*/
+
+Widget builder() {
+  return Builder(
+    builder: (BuildContext context) {
+      AlertDialog(
+          title: Text("hello"),
+          elevation: 2,
+          backgroundColor: Colors.deepOrange);
+    },
+  );
+}
+
+class Comment extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.teal,
+    );
+  }
+}
+
+class AddComment extends StatelessWidget {
+  String PostId;
+
+  AddComment(this.PostId);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.teal,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+          body: Center(
+            child: Text(
+              "  $PostId",
+              style: TextStyle(
+                  fontSize: 35,
+                  color: Colors.teal,
+                  fontWeight: FontWeight.w900),
+            ),
+          )),
+    );
+  }
+}

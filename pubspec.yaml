@@ -35,7 +35,7 @@ dev_dependencies:
   intl: ^0.15.8
   share: ^0.6.1+1
   fluttertoast: ^3.0.4
-
+  rflutter_alert: ^1.0.2
   ## need extra config for ios
 
 
