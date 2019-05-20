@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'ui_bottomnavbar.dart';
 import 'myDravver.dart';
-
+import 'AddComment.dart';
 //import 'package:photo_view/photo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:share/share.dart';
@@ -66,6 +66,7 @@ class _CaseBodyState extends State<CaseBody> {
   bool likebool;
   var ref = Firestore.instance.collection('cases');
   var postId;
+  var v_profileimage;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -90,6 +91,7 @@ class _CaseBodyState extends State<CaseBody> {
                   itemBuilder: (context, index) {
                     DocumentSnapshot caseSnapshot =
                         snapshot.data.documents[index];
+
 
                     return Container(
                       color: Colors.white,
@@ -313,40 +315,4 @@ Widget builder() {
   );
 }
 
-class Comment extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.teal,
-    );
-  }
-}
 
-class AddComment extends StatelessWidget {
-  String PostId;
-
-  AddComment(this.PostId);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.teal,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-          body: Center(
-            child: Text(
-              "  $PostId",
-              style: TextStyle(
-                  fontSize: 35,
-                  color: Colors.teal,
-                  fontWeight: FontWeight.w900),
-            ),
-          )),
-    );
-  }
-}
