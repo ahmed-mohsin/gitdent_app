@@ -5,7 +5,9 @@
 import 'package:flutter/material.dart';
 import 'package:dent_app/ui/logIn.dart';
 
-void main() => runApp(logIn());
+import 'auth/GoogleSignIN.dart';
+
+void main() => runApp(LogPage());
 
 
 

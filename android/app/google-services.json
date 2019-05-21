@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "709409880494-0a418c6k859ffp9tiubnquqmgmiidlcq.apps.googleusercontent.com",
+          "client_id": "709409880494-5832vcoklmujnqtccqa50a09m6d9vljr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "corner.dentapp",
-            "certificate_hash": "ff236a358456d417c71954cc5f3b405616026e97"
+            "certificate_hash": "1f7fca03f2bb70ca19b9f39bca3eb073cff68cdf"
           }
         },
         {
