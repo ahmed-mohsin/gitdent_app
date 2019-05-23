@@ -1,13 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'addCase.dart';
 
-class AddComment extends StatelessWidget {
-  String PostId, tf;
-  String id, postBody, date;
+class AddComment extends StatefulWidget {
+  String PostId;
 
   AddComment(this.PostId);
 
+  @override
+  _AddCommentState createState() => _AddCommentState(PostId);
+}
+
+class _AddCommentState extends State<AddComment> {
+  String PostId, tf;
+  String name, imageUrl;
+  String id, postBody, date;
+
+  _AddCommentState(String postId);
+
+  @override
+  void initState() {
+    FirebaseAuth.instance.currentUser().then((firebaseUser) {
+      if (firebaseUser == null) {
+        //signed out
+      } else {
+        print("succeful log in");
+        setState(() {
+          name = firebaseUser.displayName;
+          imageUrl = firebaseUser.photoUrl;
+        });
+
+        //signed in
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,42 +48,18 @@ class AddComment extends StatelessWidget {
           ),
           body: Center(
             child: Padding(
-              padding: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.only(top: 0),
               child: Column(
                 children: <Widget>[
-                  Text(
-                    "  $PostId",
+
+                  /*,Text(
+                    "  ${widget.PostId}",
                     style: TextStyle(
                         fontSize: 25,
                         color: Colors.teal,
                         fontWeight: FontWeight.w900),
-                  ),
+                  ),*/
 
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      onSubmitted: (text) {
-                        setDataToFirebase();
-                      },
-                      onChanged: (text) {
-                        tf = text;
-                      },
-                      maxLines: 4,
-                      decoration: InputDecoration.collapsed(
-                          border: OutlineInputBorder(
-                              gapPadding: 30,
-                              borderSide: BorderSide(
-                                  color: Colors.teal,
-                                  style: BorderStyle.solid)),
-                          hintText: "",
-                          fillColor: Colors.amber),
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: setDataToFirebase,
-                    child: Text("add comment"),
-                  ),
-                  //Container(color: Colors.blueGrey,height: 2,width: MediaQuery.of(context).size.width,),
                   Expanded(
                     child: Container(
                         color: Colors.teal,
@@ -65,7 +68,7 @@ class AddComment extends StatelessWidget {
                         child: StreamBuilder(
                             stream: Firestore.instance
                                 .collection('cases')
-                                .document(PostId)
+                                .document(widget.PostId)
                                 .collection("comments")
                                 .snapshots(),
                             builder: (context, snapshot) {
@@ -91,8 +94,10 @@ class AddComment extends StatelessWidget {
                                                   padding: EdgeInsets.only(
                                                       left: 8, top: 8),
                                                   child: CircleAvatar(
+                                                    backgroundImage: NetworkImage(
+                                                        "${caseSnapshot['imageUrl']}"),
                                                     backgroundColor:
-                                                        Colors.white,
+                                                    Colors.white,
                                                     radius: 25,
                                                   ),
                                                 ),
@@ -104,16 +109,23 @@ class AddComment extends StatelessWidget {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: <Widget>[
-                                                      Text("user name",
+                                                      Text(
+                                                          "${caseSnapshot['userName']}",
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.white,
-                                                              fontSize: 15,
+                                                              fontSize: 18,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w700)),
                                                       Text(
-                                                          '${caseSnapshot['date']}'),
+                                                        '${caseSnapshot['date']}',
+                                                        style: TextStyle(
+                                                            fontSize: 10,
+                                                            fontStyle: FontStyle
+                                                                .italic,
+                                                            color: Colors
+                                                                .white),),
                                                     ],
                                                   ),
                                                 ),
@@ -137,6 +149,32 @@ class AddComment extends StatelessWidget {
                                       }),
                                 );
                             })),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      onSubmitted: (text) {
+                        setDataToFirebase();
+                      },
+                      onChanged: (text) {
+                        tf = text;
+                      },
+                      maxLines: 4,
+                      decoration: InputDecoration.collapsed(
+                          border: OutlineInputBorder(
+                              gapPadding: 30,
+                              borderSide: BorderSide(
+                                  color: Colors.teal,
+                                  style: BorderStyle.solid)),
+                          hintText: "  enter comment here",
+                          fillColor: Colors.amber),
+                    ),
+                  ),
+                  //Container(color: Colors.blueGrey,height: 2,width: MediaQuery.of(context).size.width,),
+                  FlatButton(color: Colors.teal,
+                    onPressed: setDataToFirebase,
+                    child: Text(
+                      "add comment", style: TextStyle(color: Colors.white),),
                   )
                 ],
               ),
@@ -147,14 +185,17 @@ class AddComment extends StatelessWidget {
 
   void setDataToFirebase() {
     Map<String, dynamic> postData = {
+      'imageUrl': imageUrl,
       'userID': "amo",
+      'userName': name,
       'date': "${getDateofnow()}",
       'postBody': tf
+
     };
 
     Firestore.instance
         .collection('cases')
-        .document(PostId)
+        .document(widget.PostId)
         .collection("comments")
         .document()
         .setData(postData);

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,7 +14,9 @@ class AddCase extends StatefulWidget {
 }
 
 class _AddCaseState extends State<AddCase> {
+  String imagUrl;
 
+  String userName;
   String addType = "piccase" ;
   String tf = "";
   File image;
@@ -78,6 +81,17 @@ print(imageUrl);
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    FirebaseAuth.instance.currentUser().then((firebaseUser) {
+      if (firebaseUser == null) {
+        //signed out
+      }
+      else {
+        print("succeful log in");
+        userName = firebaseUser.displayName;
+        imagUrl = firebaseUser.photoUrl; //signed in
+      }
+    });
     postID();
   }
   @override
@@ -215,9 +229,8 @@ print(imageUrl);
       'description': "$tf",
       'img': iu,
       'likes': 0,
-      'profileimg':
-      'https://scontent-hbe1-1.xx.fbcdn.net/v/t1.0-9/29790066_10213650742716130_1554565954052238420_n.jpg?_nc_cat=110&_nc_ht=scontent-hbe1-1.xx&oh=1b748153f3c52a24656718cc26d1fcf3&oe=5D3C4AFE',
-      'username': "Ahmed Mohsin"
+      'profileimg': imagUrl,
+      'username': userName
     });
   }
 }
