@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dent_app/auth/GoogleSignIN.dart';
+import 'package:dent_app/ui/ui_myapp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'ui_myapp.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class LogPage extends StatelessWidget {

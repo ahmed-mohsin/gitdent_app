@@ -8,85 +8,77 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:intl/intl.dart';
 
-class AddCase extends StatefulWidget {
+class AddPost extends StatefulWidget {
+  String type;
+
+  AddPost({this.type});
   @override
-  _AddCaseState createState() => _AddCaseState();
+  _AddPostState createState() => _AddPostState(Type: type);
 }
 
-class _AddCaseState extends State<AddCase> {
-  String imagUrl;
+class _AddPostState extends State<AddPost> {
+  String Type;
 
+  _AddPostState({this.Type});
+
+  String imagUrl;
   String userName;
-  String addType = "piccase" ;
+  String addType = "piccase";
   String tf = "";
   File image;
-  String filename,iu;
-  bool subtnstate ;
-int nnn ;
+  String filename, iu;
+  bool subtnstate;
+  int nnn;
 
   Future postID() async {
-    var respectsQuery = Firestore.instance
-        .collection('cases');
+    var respectsQuery = Firestore.instance.collection('cases');
     var querySnapshot = await respectsQuery.getDocuments();
     var totalposts = querySnapshot.documents.length;
     print("hello set state + $totalposts");
-    nnn=totalposts+1;
+    nnn = totalposts + 1;
     return nnn;
   }
-
-
-  /*getPostNum() {
-    var a=  Firestore.instance
-        .collection('cases').snapshots();
-    int numb = a.length as int   ;
-    int numc = numb+1 ;
-    return numc ;
-  }*/
 
 
   Future _getImageFromGalray() async {
     var selectedImage =
         await ImagePicker.pickImage(source: ImageSource.gallery);
-uploadImage();
+    uploadImage();
     setState(() {
       image = selectedImage;
       filename = basename(image.path);
-uploadImage();
-    }
-    );
+      uploadImage();
+    });
   }
-  Future uploadImage() async{
 
+  Future uploadImage() async {
     StorageReference ref = FirebaseStorage.instance.ref().child(filename);
 
-StorageUploadTask uploadTask = ref.putFile(image);
+    StorageUploadTask uploadTask = ref.putFile(image);
 
-var downurl = await (await uploadTask.onComplete).ref.getDownloadURL();
+    var downurl = await (await uploadTask.onComplete).ref.getDownloadURL();
 
-var imageUrl=downurl.toString();
+    var imageUrl = downurl.toString();
 
-iu=imageUrl;
+    iu = imageUrl;
 
-print(iu);
+    print(iu);
 
-
-setState(() {
-  iu ==null ? subtnstate=true : subtnstate=false ;
-
-});
-print(imageUrl);
+    setState(() {
+      iu == null ? subtnstate = true : subtnstate = false;
+    });
+    print(imageUrl);
   }
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
 
     FirebaseAuth.instance.currentUser().then((firebaseUser) {
       if (firebaseUser == null) {
         //signed out
-      }
-      else {
+      } else {
         print("succeful log in");
         userName = firebaseUser.displayName;
         imagUrl = firebaseUser.photoUrl; //signed in
@@ -94,6 +86,7 @@ print(imageUrl);
     });
     postID();
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -118,20 +111,30 @@ print(imageUrl);
                               padding: const EdgeInsets.all(8.0),
                               child: MaterialButton(
                                 height: 100,
-                                child: Text("choose pic from camera or gallary"),
+                                child:
+                                Text("choose pic from camera or gallary"),
                                 onPressed: _getImageFromGalray,
                               ),
                             ),
                           ),
                           Center(
                             child: Container(
-                              width: MediaQuery.of(context).size.width*.6,
-                                child: image == null ?
-                                Text("pick  image from gallary")
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * .6,
+                                child: image == null
+                                    ? Text("pick  image from gallary")
                                     : Image.file(
-                                        image,fit: BoxFit.fill,
+                                  image,
+                                  fit: BoxFit.fill,
                                         height: 150,
-                                        width: MediaQuery.of(context).size.width*.6,
+                                  width:
+                                  MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width *
+                                      .6,
                                       )),
                           ),
                           Padding(
@@ -146,10 +149,9 @@ print(imageUrl);
                               },
                               maxLines: 4,
                               decoration: InputDecoration.collapsed(
-
                                   border: OutlineInputBorder(
-                                    gapPadding: 30
-                                      ,borderSide: BorderSide(
+                                      gapPadding: 30,
+                                      borderSide: BorderSide(
                                           color: Colors.teal,
                                           style: BorderStyle.solid)),
                                   hintText: "",
@@ -158,7 +160,6 @@ print(imageUrl);
                           ),
                         ],
                       ),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
@@ -175,7 +176,7 @@ print(imageUrl);
                                 Navigator.pop(context);
                               }),
                           MaterialButton(
-                              child:  Text(
+                              child: Text(
                                 'Submit',
                                 style: TextStyle(
                                     color: Colors.white,
@@ -183,24 +184,23 @@ print(imageUrl);
                               ),
                               color: Colors.teal,
                               height: 35,
-
                               onPressed: () {
-                                if (iu!=null) {
-
+                                if (iu != null) {
                                   uploadImage();
 
-                                setState(() {
+                                  setState(() {
+                                    setDataToFirebase(Type);
 
-                                  setDataToFirebase();
+                                    Navigator.pop(context);
 
-                                  Navigator.pop(context);
-
-                                  print("upload done");
-                                });}
-                                else if (iu==null){
-                                  Scaffold.of(context).showSnackBar(SnackBar(content: Text("vvait till image upload")));}
+                                    print("upload done");
+                                  });
+                                } else if (iu == null) {
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                      content:
+                                      Text("vvait till image upload")));
+                                }
                               }),
-
                         ],
                       ),
                     ],
@@ -214,13 +214,11 @@ print(imageUrl);
     );
   }
 
+  void setDataToFirebase(String type) {
+    String Type;
+    Type = type;
 
-  void setDataToFirebase() {
-    Firestore.instance
-        .collection('cases')
-        .document()
-        .setData({
-
+    Firestore.instance.collection(type).document().setData({
       //'postnum':nnn,
       //'uID':'am05042325252',
       'comments': 0,
@@ -235,11 +233,24 @@ print(imageUrl);
   }
 }
 
-String  getDateofnow(){
+String getDateofnow() {
   var now = DateTime.now();
   //to write the name of the day write mmm ,,,, iif mm will write num
   var dateFormat = DateFormat('dd MMM yyyy  @ hh:mm').format(now);
   return dateFormat;
 }
 
+class Post {
+  String date, description, imageUrl, userName, userProfileImage;
+  int comments, likes;
+  bool likebool;
 
+  Post({this.date,
+    this.description,
+    this.imageUrl,
+    this.userName,
+    this.userProfileImage,
+    this.comments,
+    this.likes,
+    this.likebool});
+}

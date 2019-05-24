@@ -3,7 +3,7 @@
 //  started in 23-03-2018
 
 import 'package:flutter/material.dart';
-import 'package:dent_app/ui/logIn.dart';
+import 'package:dent_app/auth/logIn.dart';
 
 import 'auth/GoogleSignIN.dart';
 

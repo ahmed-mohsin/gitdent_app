@@ -1,10 +1,12 @@
 import 'package:dent_app/auth/getdatafromsharedpref.dart';
-import 'package:dent_app/ui/logIn.dart';
+import 'package:dent_app/drawerElements/casesModel.dart';
+import 'package:dent_app/auth/logIn.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'tutorailModel.dart';
-import 'casesModel.dart';
-import 'toolsModel.dart';
+
+//import 'package:dent_app/Cases/casesModel.dart';
+import 'package:dent_app/drawerElements/toolsModel.dart';
 
 class Mydrawer extends StatefulWidget {
   @override

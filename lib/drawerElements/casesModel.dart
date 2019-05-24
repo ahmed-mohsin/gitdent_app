@@ -1,15 +1,11 @@
+import 'package:dent_app/addingCenter/AddComment.dart';
+import 'package:dent_app/addingCenter/addpost.dart';
+import 'package:dent_app/ui/myDrawer.dart';
+import 'package:dent_app/ui/ui_bottomnavbar.dart';
 import 'package:flutter/material.dart';
-import 'ui_bottomnavbar.dart';
-import 'myDrawer.dart';
-import 'AddComment.dart';
-//import 'package:photo_view/photo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:share/share.dart';
 
-//import 'package:flutter_simple_video_player/flutter_simple_video_player.dart';
-//import 'package:dent_app/navbarElments/home.dart';
-import 'addCase.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class caseBody extends StatefulWidget {
   @override
@@ -40,7 +36,8 @@ class _caseBodyState extends State<caseBody> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddCase()),
+                      MaterialPageRoute(
+                          builder: (context) => AddPost(type: "cases",)),
                     );
                   })),
           drawer: Mydrawer(),
@@ -67,6 +64,7 @@ class _CaseBodyState extends State<CaseBody> {
   var ref = Firestore.instance.collection('cases');
   var postId;
   var v_profileimage;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -80,9 +78,9 @@ class _CaseBodyState extends State<CaseBody> {
               if (!snapshot.hasData) {
                 return Center(
                     child: Text(
-                  "Loading",
-                  style: TextStyle(fontSize: 25),
-                ));
+                      "Loading",
+                      style: TextStyle(fontSize: 25),
+                    ));
               }
               //var casedata = snapshot.data;
               return ListView.builder(
@@ -90,7 +88,7 @@ class _CaseBodyState extends State<CaseBody> {
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
                     DocumentSnapshot caseSnapshot =
-                        snapshot.data.documents[index];
+                    snapshot.data.documents[index];
 
 
                     return Container(
@@ -111,7 +109,7 @@ class _CaseBodyState extends State<CaseBody> {
                                   ),
                                   Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text('${caseSnapshot['username']}',
                                           style: TextStyle(
@@ -121,7 +119,7 @@ class _CaseBodyState extends State<CaseBody> {
                                           )),
                                       Padding(
                                         padding:
-                                            EdgeInsets.only(left: 5, top: 3),
+                                        EdgeInsets.only(left: 5, top: 3),
                                         child: Text(
                                           '${caseSnapshot['date']}',
                                           style: TextStyle(
@@ -142,12 +140,12 @@ class _CaseBodyState extends State<CaseBody> {
                                           label: "delete ",
                                           onPressed: () {
                                             Firestore.instance.runTransaction(
-                                                (Transaction
-                                                    myTransaction) async {
-                                              await myTransaction.delete(
-                                                  snapshot.data.documents[index]
-                                                      .reference);
-                                            });
+                                                    (Transaction
+                                                myTransaction) async {
+                                                  await myTransaction.delete(
+                                                      snapshot.data.documents[index]
+                                                          .reference);
+                                                });
                                           }),
                                     );
                                     Scaffold.of(context).showSnackBar(snack);

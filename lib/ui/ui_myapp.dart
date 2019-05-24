@@ -1,4 +1,5 @@
 import 'package:dent_app/auth/getdatafromsharedpref.dart';
+import 'package:dent_app/drawerElements/casesModel.dart';
 import 'package:dent_app/navbarElments/bookmarks.dart';
 import 'package:dent_app/navbarElments/profile.dart';
 import 'package:dent_app/navbarElments/search.dart';
@@ -8,7 +9,7 @@ import 'myDrawer.dart';
 import 'package:dent_app/navbarElments/home.dart';
 import 'tutorailModel.dart';
 import 'listv-item-fromtutos.dart';
-import 'casesModel.dart';
+//import 'package:dent_app/Cases/casesModel.dart';
 
 
 class MyApp extends StatefulWidget {

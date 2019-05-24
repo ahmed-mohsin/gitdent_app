@@ -1,6 +1,10 @@
+import 'package:dent_app/addingCenter/addpost.dart';
+import 'package:dent_app/ui/myDrawer.dart';
+import 'package:dent_app/ui/ui_bottomnavbar.dart';
 import 'package:flutter/material.dart';
-import 'ui_bottomnavbar.dart';
-import 'myDrawer.dart';
+
+//import 'ui_bottomnavbar.dart';
+//import 'myDrawer.dart';
 import 'package:photo_view/photo_view.dart';
 
 class toolBody extends StatelessWidget {
@@ -24,7 +28,13 @@ class toolBody extends StatelessWidget {
                     Icons.add,
                     color: Colors.teal,
                   ),
-                  onPressed: () {})),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddPost(type: "tools",)),
+                    );
+                  })),
           drawer: Mydrawer(),
           body: new toolsBody(),
           bottomNavigationBar: BottomnavBar()),
