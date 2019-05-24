@@ -1,6 +1,7 @@
 import 'package:dent_app/auth/getdatafromsharedpref.dart';
 import 'package:dent_app/drawerElements/casesModel.dart';
 import 'package:dent_app/auth/logIn.dart';
+import 'package:dent_app/drawerElements/labsModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'tutorailModel.dart';
@@ -106,6 +107,25 @@ class _MydrawerState extends State<Mydrawer> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => caseBody()),
+                );
+              },
+            ),
+            ListTile(
+              selected: true,
+              leading: Icon(
+                Icons.beach_access,
+                color: Colors.teal,
+              ),
+              title: Text('Lab', style: TextStyle(color: Colors.teal)),
+              subtitle: Text(
+                "all the new in the labs and tech ",
+                style: TextStyle(color: Colors.grey),
+              ),
+              onTap: () {
+                //Navigator.of(context).pushNamed('/casebody');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LabBody()),
                 );
               },
             ),
