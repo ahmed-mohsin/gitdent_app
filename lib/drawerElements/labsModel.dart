@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:share/share.dart';
 
+
 class LabBody extends StatefulWidget {
   @override
   _labBodyState createState() => _labBodyState();
 }
+
 
 class _labBodyState extends State<LabBody> {
   @override
@@ -36,9 +38,7 @@ class _labBodyState extends State<LabBody> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddPost(
-                                type: "lab",
-                              )),
+                          builder: (context) => AddPost(type: "lab",)),
                     );
                   })),
           drawer: Mydrawer(),
@@ -65,7 +65,6 @@ class _CaseBodyState extends State<CaseBody> {
   var ref = Firestore.instance.collection('lab');
   var postId;
   var v_profileimage;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -79,9 +78,9 @@ class _CaseBodyState extends State<CaseBody> {
               if (!snapshot.hasData) {
                 return Center(
                     child: Text(
-                  "Loading",
-                  style: TextStyle(fontSize: 25),
-                ));
+                      "Loading",
+                      style: TextStyle(fontSize: 25),
+                    ));
               }
 
               return ListView.builder(
@@ -89,7 +88,8 @@ class _CaseBodyState extends State<CaseBody> {
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
                     DocumentSnapshot caseSnapshot =
-                        snapshot.data.documents[index];
+                    snapshot.data.documents[index];
+
 
                     return Container(
                       color: Colors.white,
@@ -109,7 +109,7 @@ class _CaseBodyState extends State<CaseBody> {
                                   ),
                                   Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text('${caseSnapshot['username']}',
                                           style: TextStyle(
@@ -119,7 +119,7 @@ class _CaseBodyState extends State<CaseBody> {
                                           )),
                                       Padding(
                                         padding:
-                                            EdgeInsets.only(left: 5, top: 3),
+                                        EdgeInsets.only(left: 5, top: 3),
                                         child: Text(
                                           '${caseSnapshot['date']}',
                                           style: TextStyle(
@@ -134,18 +134,19 @@ class _CaseBodyState extends State<CaseBody> {
                                   icon: Icon(Icons.delete),
                                   onPressed: () {
                                     var snack = SnackBar(
-                                      content:
-                                          Text("click  to delete the post"),
+                                      content: Text(
+                                          "click  to delete the post"),
                                       action: SnackBarAction(
                                           label: "delete ",
                                           onPressed: () {
                                             Firestore.instance.runTransaction(
-                                                (Transaction
-                                                    myTransaction) async {
-                                              await myTransaction.delete(
-                                                  snapshot.data.documents[index]
-                                                      .reference);
-                                            });
+                                                    (Transaction
+                                                myTransaction) async {
+                                                  await myTransaction.delete(
+                                                      snapshot.data
+                                                          .documents[index]
+                                                          .reference);
+                                                });
                                           }),
                                     );
                                     Scaffold.of(context).showSnackBar(snack);
@@ -179,7 +180,7 @@ class _CaseBodyState extends State<CaseBody> {
                                         onPressed: () {
                                           setState(() {
                                             bool getLikebool =
-                                                caseSnapshot['Likebool'];
+                                            caseSnapshot['Likebool'];
                                             print(getLikebool);
                                             likebool = getLikebool;
                                             switch (likebool) {
@@ -188,8 +189,8 @@ class _CaseBodyState extends State<CaseBody> {
                                                   caseSnapshot.reference
                                                       .updateData({
                                                     'likes':
-                                                        caseSnapshot['likes'] +
-                                                            1,
+                                                    caseSnapshot['likes'] +
+                                                        1,
                                                     'Likebool': true
                                                   });
                                                   _activelikeColor =
@@ -202,8 +203,8 @@ class _CaseBodyState extends State<CaseBody> {
                                                   caseSnapshot.reference
                                                       .updateData({
                                                     'likes':
-                                                        caseSnapshot['likes'] -
-                                                            1,
+                                                    caseSnapshot['likes'] -
+                                                        1,
                                                     'Likebool': false
                                                   });
                                                   _activelikeColor =
@@ -211,7 +212,7 @@ class _CaseBodyState extends State<CaseBody> {
                                                   fontsize = 12.0;
                                                 }
                                                 break;
-                                              /*default :{
+                                            /*default :{
                                                 caseSnapshot.reference.updateData({
                                                   //'likes':caseSnapshot['likes']+1,
                                                   'Likebool':false
@@ -312,3 +313,5 @@ Widget builder() {
     },
   );
 }
+
+
