@@ -9,9 +9,12 @@ import 'package:path/path.dart';
 import 'package:intl/intl.dart';
 
 class AddPost extends StatefulWidget {
+
+  static const id = "Addpost";
   String type;
 
   AddPost({this.type});
+
   @override
   _AddPostState createState() => _AddPostState(Type: type);
 }
@@ -143,7 +146,7 @@ class _AddPostState extends State<AddPost> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 15, right: 19),
-                            child: TextField(
+                            child: TextField(textAlign: TextAlign.center,
                               onChanged: (text) {
                                 tf = text;
                               },

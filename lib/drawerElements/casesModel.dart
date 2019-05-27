@@ -2,17 +2,20 @@ import 'package:dent_app/addingCenter/AddComment.dart';
 import 'package:dent_app/addingCenter/addpost.dart';
 import 'package:dent_app/ui/myDrawer.dart';
 import 'package:dent_app/ui/ui_bottomnavbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:share/share.dart';
 
 
 class caseBody extends StatefulWidget {
+
   @override
   _caseBodyState createState() => _caseBodyState();
 }
 
 class _caseBodyState extends State<caseBody> {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -57,6 +60,25 @@ class CaseBody extends StatefulWidget {
 }
 
 class _CaseBodyState extends State<CaseBody> {
+  static String uid;
+
+  var likedref;
+
+  @override
+  void initState() {
+    FirebaseAuth.instance.currentUser().then((firebaseUser) {
+      if (firebaseUser == null) {} else {
+        setState(() {
+          uid = firebaseUser.uid;
+          print(uid);
+          likedref = Firestore.instance.collection("users")
+              .document("$uid")
+              .collection("likedPosts");
+        });
+      }
+    });
+  }
+
   double fontsize = 12;
   var _activelikeColor = Colors.grey;
   String like_text = "Like";
@@ -65,6 +87,7 @@ class _CaseBodyState extends State<CaseBody> {
   var postId;
   var v_profileimage;
 
+//var likedref = Firestore.instance.collection("users").document("$uid").collection("likedPosts");
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -192,6 +215,11 @@ class _CaseBodyState extends State<CaseBody> {
                                                         1,
                                                     'Likebool': true
                                                   });
+                                                  likedref.reference().add({
+                                                    "postid": snapshot.data
+                                                        .documents[index]
+                                                        .documentID
+                                                  });
                                                   _activelikeColor =
                                                       Colors.teal;
                                                   fontsize = 13.0;
@@ -206,6 +234,13 @@ class _CaseBodyState extends State<CaseBody> {
                                                         1,
                                                     'Likebool': false
                                                   });
+
+                                                  likedref.reference().add({
+                                                    "postid": snapshot.data
+                                                        .documents[index]
+                                                        .documentID
+                                                  });
+
                                                   _activelikeColor =
                                                       Colors.grey;
                                                   fontsize = 12.0;
@@ -239,8 +274,10 @@ class _CaseBodyState extends State<CaseBody> {
                                   onTap: () {},
                                   child: FlatButton(
                                     onPressed: () {
-                                      postId = snapshot
-                                          .data.documents[index].documentID;
+                                      setState(() {
+                                        postId = snapshot
+                                            .data.documents[index].documentID;
+                                      });
                                       print(postId);
                                       Navigator.push(
                                         context,

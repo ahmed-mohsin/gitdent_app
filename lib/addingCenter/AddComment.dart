@@ -152,7 +152,7 @@ class _AddCommentState extends State<AddComment> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextField(textAlign: TextAlign.center,
                       onSubmitted: (text) {
                         setDataToFirebase();
                       },

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dent_app/addingCenter/addpost.dart';
 import 'package:dent_app/ui/ui_myapp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 class LogPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: logIn(),);
+    return MaterialApp(
+      home: logIn(),
+      //initialRoute: AddPost.id,
+      routes: {
+        AddPost.id: (context) => AddPost(),
+        // 'myapp':(context)=>(),
+      },
+    );
   }
 }
 

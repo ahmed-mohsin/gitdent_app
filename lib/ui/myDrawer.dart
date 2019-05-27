@@ -131,6 +131,21 @@ class _MydrawerState extends State<Mydrawer> {
             ),
             ListTile(
               selected: true,
+              leading: Icon(Icons.beach_access, color: Colors.teal),
+              title: Text('Tools', style: TextStyle(color: Colors.teal)),
+              subtitle: Text(
+                "all the new about tools and instruments ",
+                style: TextStyle(color: Colors.grey),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ToolBody()),
+                );
+              },
+            ),
+            ListTile(
+              selected: true,
               leading: Icon(
                 Icons.beach_access,
                 color: Colors.teal,
@@ -149,31 +164,7 @@ class _MydrawerState extends State<Mydrawer> {
                 );
               },
             ),
-            ListTile(
-              selected: true,
-              leading: Icon(Icons.beach_access, color: Colors.teal),
-              title: Text('Tools', style: TextStyle(color: Colors.teal)),
-              subtitle: Text(
-                "all the new about tools and instruments ",
-                style: TextStyle(color: Colors.grey),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => toolBody()),
-                );
-              },
-            ),
-            ListTile(
-              selected: true,
-              leading: Icon(Icons.beach_access, color: Colors.teal),
-              title: Text('Lab', style: TextStyle(color: Colors.teal)),
-              subtitle: Text(
-                "new about lab and tech ",
-                style: TextStyle(color: Colors.grey),
-              ),
-              onTap: () {},
-            ),
+
             ListTile(
               selected: true,
               leading: Icon(Icons.beach_access, color: Colors.teal),

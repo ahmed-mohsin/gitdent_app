@@ -1,13 +1,19 @@
+import 'package:dent_app/addingCenter/AddComment.dart';
 import 'package:dent_app/addingCenter/addpost.dart';
 import 'package:dent_app/ui/myDrawer.dart';
 import 'package:dent_app/ui/ui_bottomnavbar.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:share/share.dart';
 
-//import 'ui_bottomnavbar.dart';
-//import 'myDrawer.dart';
-import 'package:photo_view/photo_view.dart';
 
-class toolBody extends StatelessWidget {
+class ToolBody extends StatefulWidget {
+  @override
+  _toolBodyState createState() => _toolBodyState();
+}
+
+
+class _toolBodyState extends State<ToolBody> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,7 +24,7 @@ class toolBody extends StatelessWidget {
               elevation: 0.0,
               centerTitle: true,
               title: Text(
-                "tool Gallary",
+                "Tools Gallary",
                 style: TextStyle(color: Colors.white),
               )),
           floatingActionButton: SizedBox(
@@ -36,130 +42,285 @@ class toolBody extends StatelessWidget {
                     );
                   })),
           drawer: Mydrawer(),
-          body: new toolsBody(),
+          body: new ToolsBody(),
           bottomNavigationBar: BottomnavBar()),
     );
   }
 }
 
-class toolsBody extends StatelessWidget {
-  const toolsBody({
+class ToolsBody extends StatefulWidget {
+  const ToolsBody({
     Key key,
   }) : super(key: key);
 
   @override
+  _ToolsBodyState createState() => _ToolsBodyState();
+}
+
+class _ToolsBodyState extends State<ToolsBody> {
+  double fontsize = 12;
+  var _activelikeColor = Colors.grey;
+  String like_text = "Like";
+  bool likebool;
+  var ref = Firestore.instance.collection('tools');
+  var postId;
+  var v_profileimage;
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey.shade100,
-      child: ListView(
-        physics: BouncingScrollPhysics(),
-        children: <Widget>[
-          smalltool(),
-          smalltool(),
-          smalltool(),
-          smalltool(),
-          smalltool(),
-          smalltool()
-        ],
-      ),
-    );
+        color: Colors.grey.shade100,
+        child: StreamBuilder(
+            stream: Firestore.instance
+                .collection('tools')
+                .orderBy('date', descending: true)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                    child: Text(
+                      "Loading",
+                      style: TextStyle(fontSize: 25),
+                    ));
+              }
+
+              return ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot caseSnapshot =
+                    snapshot.data.documents[index];
+
+
+                    return Container(
+                      color: Colors.white,
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          '${caseSnapshot['profileimg']}'),
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text('${caseSnapshot['username']}',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.black,
+                                          )),
+                                      Padding(
+                                        padding:
+                                        EdgeInsets.only(left: 5, top: 3),
+                                        child: Text(
+                                          '${caseSnapshot['date']}',
+                                          style: TextStyle(
+                                              color: Colors.grey, fontSize: 12),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    var snack = SnackBar(
+                                      content: Text(
+                                          "click  to delete the post"),
+                                      action: SnackBarAction(
+                                          label: "delete ",
+                                          onPressed: () {
+                                            Firestore.instance.runTransaction(
+                                                    (Transaction
+                                                myTransaction) async {
+                                                  await myTransaction.delete(
+                                                      snapshot.data
+                                                          .documents[index]
+                                                          .reference);
+                                                });
+                                          }),
+                                    );
+                                    Scaffold.of(context).showSnackBar(snack);
+                                  })
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 8, top: 4, right: 8),
+                            child: Text(
+                              '${caseSnapshot['description']}',
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * .50,
+                            child: Image(
+                              image: NetworkImage('${caseSnapshot['img']}'),
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                InkWell(
+                                  onTap: () {},
+                                  child: Padding(
+                                      padding: EdgeInsets.only(left: 2),
+                                      child: FlatButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            bool getLikebool =
+                                            caseSnapshot['Likebool'];
+                                            print(getLikebool);
+                                            likebool = getLikebool;
+                                            switch (likebool) {
+                                              case false:
+                                                {
+                                                  caseSnapshot.reference
+                                                      .updateData({
+                                                    'likes':
+                                                    caseSnapshot['likes'] +
+                                                        1,
+                                                    'Likebool': true
+                                                  });
+                                                  _activelikeColor =
+                                                      Colors.teal;
+                                                  fontsize = 13.0;
+                                                }
+                                                break;
+                                              case true:
+                                                {
+                                                  caseSnapshot.reference
+                                                      .updateData({
+                                                    'likes':
+                                                    caseSnapshot['likes'] -
+                                                        1,
+                                                    'Likebool': false
+                                                  });
+                                                  _activelikeColor =
+                                                      Colors.grey;
+                                                  fontsize = 12.0;
+                                                }
+                                                break;
+                                            /*default :{
+                                                caseSnapshot.reference.updateData({
+                                                  //'likes':caseSnapshot['likes']+1,
+                                                  'Likebool':false
+                                                });
+                                                //_activelikeColor= Colors.grey;
+                                                //fontsize=12.0;
+                                              }*/
+                                            }
+                                          });
+                                        }
+
+                                        //setState(() {});
+
+                                        ,
+                                        child: Text(
+                                            '${caseSnapshot['likes']
+                                                .toString()}' +
+                                                ' likes',
+                                            style: TextStyle(
+                                              fontSize: fontsize,
+                                              color: _activelikeColor,
+                                            )),
+                                      )),
+                                ),
+                                InkWell(
+                                  onTap: () {},
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      postId = snapshot
+                                          .data.documents[index].documentID;
+                                      print(postId);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddComment(postId)),
+                                      );
+                                    },
+                                    child: Text(
+                                        '${caseSnapshot['comments']
+                                            .toString()}' +
+                                            ' comments',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        )),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () => builder(),
+                                  child: Padding(
+                                      padding: EdgeInsets.only(right: 8),
+                                      child: FlatButton(
+                                        onPressed: () {
+                                          Share.share(
+                                            "${caseSnapshot['img']}" +
+                                                "\n \n ${caseSnapshot['description']}" +
+                                                "        \n\n  Text form DentApp" +
+                                                "\n \n for more please visit filgoal.com",
+                                          );
+                                        },
+                                        child: Text("Share",
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            )),
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 3,
+                            child: Container(
+                              color: Colors.grey,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  });
+            }));
   }
 }
 
-Widget smalltool() {
-  return Container(
-    color: Colors.white,
-    child: Column(
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                backgroundImage: AssetImage('assets/am.jpg'),
-              ),
-            ),
-            Column(crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(" Ahmed Mohsin  ",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.black,
-                    )),
-                Padding(
-                  padding: EdgeInsets.only(left: 5,top: 3),
-                  child: Text("21 April 2019",style: TextStyle(color: Colors.grey,fontSize: 12),),
-                )
-              ],
-            ),
-          ],
-        ),
+/*PhotoView(customSize: Size.fromHeight(300),
+                                imageProvider: NetworkImage('${caseSnapshot['img']}'),
+                                backgroundDecoration:
+                                    BoxDecoration(color: Colors.white),
+                                //enableRotation: true,
+                              ))*/
 
-        //Container(height: 300,child: Image(image: AssetImage("assets/vv.jpg"),fit: BoxFit.fill,),),
-        Container(
-            height: 300,
-            child: PhotoView(
-              imageProvider: AssetImage("assets/dt.jpg"),
-              backgroundDecoration: BoxDecoration(color: Colors.white),
-              //enableRotation: true,
-
-            )),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            "These tools allow dental professionals to manipulate tissues for better visual access during treatment or during dental examination. Mirror. Probes. Operative burs. Excavators. Fine scalers. Curettes. Removable prosthodontics .. ",
-            textAlign: TextAlign.justify,
-          ),
-        ),
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              InkWell(
-                onTap: () {},
-                child: Padding(
-                    padding: EdgeInsets.only(left: 2),
-                    child: FlatButton(
-                      onPressed: () {},
-                      child: Text("250 likes ",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.teal,
-                          )),
-                    )),
-              ),
-              InkWell(
-                onTap: () {},
-                child: FlatButton(
-                  onPressed: () {},
-                  child: Text("50 Comments",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      )),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Padding(
-                    padding: EdgeInsets.only(right: 8),
-                    child: FlatButton(
-                      onPressed: () {},
-                      child: Text("Share",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          )),
-                    )),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 15,
-        )
-      ],
-    ),
+Widget builder() {
+  return Builder(
+    builder: (BuildContext context) {
+      AlertDialog(
+          title: Text("hello"),
+          elevation: 2,
+          backgroundColor: Colors.deepOrange);
+    },
   );
 }
+
+
